@@ -1,0 +1,75 @@
+import sqlite3
+import time
+import datetime
+import random
+
+conn = sqlite3.connect('mealrecipe.db')
+c = conn.cursor()
+
+ingredients_lst = ['3 cups almond milk','1 cup white or brown rice','1⁄4 cup sugar','1 teaspoon vanilla','1⁄4 teaspoon almond extract','cinnamon to taste',
+              '1⁄4 cup toasted almonds (optional)','1 Tablespoon cornstarch','1⁄4 cup cold water','4 cups berries, fresh or frozen','In a medium saucepan, mix together sugar, cornstarch, water, and 2 cups of berries.  Mash berries if desired.',
+              'Heat over medium heat, stirring frequently, until sauce starts to thicken.','Remove from heat and stir in remaining berries.  Mash if desired.','1⁄2 cup all-purpose flour',
+              '1⁄2 cup whole wheat flour','1⁄4 teaspoon salt','1⁄2 teaspoon baking soda','1⁄2 cup brown sugar','1 cup old fashioned rolled oats','1⁄2 teaspoon cinnamon','1⁄2 teaspoon nutmeg',
+              '1 pinch ground cloves','1⁄2 cup butter or margarine','3 cups apples, peeled, cored and sliced','2⁄3 cup raisins','1 egg, beaten','1⁄2 cup applesauce',
+              '1 1⁄2 cups nonfat or 1% milk','1 teaspoon vanilla','2 Tablespoons oil','1 apple, chopped (about 1 ½ cups)','2 cups old fashioned rolled oats','1 teaspoon baking powder',
+              '1⁄4 teaspoon salt','1 teaspoon cinnamon','2 Tablespoons brown sugar','2 Tablespoons chopped nuts','2 cups shredded carrots (about 4 medium carrots)','1⁄4 cup fine chopped green or red bell pepper','1⁄4 cup raisins or craisins',
+              '1⁄4 cup unsalted cashews or sunflower seeds','1⁄4 cup orange juice','1 Tablespoon vegetable oil or olive oil','1 Tablespoon low sodium soy sauce','1⁄8 teaspoon ground ginger',
+              '1⁄8 teaspoon garlic powder','1 teaspoon honey or sugar','1 Tablespoon dried cranberries','1 baking apple','1 Tablespoon oil','1 clove garlic, minced, 1/4 teaspoon garlic powder','1 cup sliced onion','1 cup sliced carrots','1 cup sliced celery','1 can (15 ounces) stewed, diced tomatoes',
+              '3 cups chicken or vegetable broth, or water ','3 cups water','1 cup dry lentils','2⁄3 cup barley','1⁄2 teaspoon dried thyme','1 teaspoon dried oregano','1 teaspoon dried basil','salt and pepper to taste']
+
+directions = ['Combine almond milk and rice in a 2-3 quart saucepan, and bring to a boil.','Reduce heat and simmer for 1/2 hour with the lid on until the rice is soft.',
+              'Add sugar, vanilla, almond extract and cinnamon. Stir and serve warm.','Refrigerate leftovers within 2 hours.','Serve over pancakes, waffles, or yogurt.',
+              'Refrigerate leftovers within 2 hours.','Preheat oven to 350 degrees. Lightly grease a 9"x13" baking pan.','Mix flour, salt and baking soda together in a large bowl. Add brown sugar, oats, cinnamon, nutmeg and ground cloves.',
+              'Cut in butter or margarine with a pastry blender or 2 knives until mixture is crumbly.','Spread half of the crumb mixture in the baking pan. Top with apple slices and raisins and sprinkle with sugar. Spread remaining crumb mixture evenly over apples.',
+              'Bake at 350 degrees for 40-50 minutes. Cool and cut into 12 bars.','Preheat oven to 375 degrees. Lightly oil or spray an 8" x 8" baking pan.','Combine the egg, applesauce, milk, vanilla and oil in a bowl. Add the apple.',
+              'Remove from oven and sprinkle with brown sugar and nuts.','Return to oven and broil for 3 to 4 minutes until top is browned and the sugar bubbles.','Serve warm.','Combine carrots, peppers, raisins and sunflower seeds in a bowl.','Combine orange juice, vegetable oil, soy sauce, ground ginger, garlic powder and honey or sugar in a jar. Cover and shake to blend.',
+              'Add the oriental salad dressing or your favorite salad dressing. Stir to blend.','Refrigerate for a few hours to blend flavors.','Refrigerate leftovers within 2 hours.','Wash apple and remove core (seed area), leaving the bottom to hold in the filling.','Peel a small band of skin from around the top of the apple.','Place the apple in a microwave safe container.',
+              'Sprinkle cinnamon around the top of the apple and into the hole.','Fill the center of the apple with cranberries, pressing down if needed.','Top the cranberries with the brown sugar and margarine.',
+              'Cover loosely with wax paper.','Microwave on high for about 2 1/2 minutes or until apple is soft when poked through the center hole with a fork. Cool slightly.','Refrigerate leftovers within 2 hours.','Heat oil in large soup pan over medium-high heat. Cook garlic and onion until they are golden brown, about 1 or 2 minutes.','Add the rest of the ingredients and bring to a boil. Lower the heat so the mixture is at a light simmer. Place a lid on the pan.',
+              'Cook until the barley and lentils are tender, about 1 to 1 1/2 hours.','Serve hot in a soup bowl.','Refrigerate leftovers within 2 hours.']
+
+reci_fname = ['Almond','Rice','Asian','Berry','Asparagus','Autumn','Apple Sauce','Mix Match','Mexican','Jamaican','Oatmeal','Baked','Bell','Barley','Brazilian','Bread','Bulgur',
+             'Buttermilk','Butternut','Cabbage','Cheesy','Chilli','Chinese','Corn','Coucous','Creamed','Creamy','Crunchy','Crispy','Crustless','Cuban','Drinkable','Dry','Dutch',
+              'Drinkable','Dry Roasted','Easy','Fabulous','Farmers', 'Favourite','Fiesta','Fresh','Garden','Glazed','Honey','Hummus','Hot','Indian','Italian','Jack-O-Lanterns','Kale','Slaw',
+              'Low-Fat','Low-Sodium','Mashed','Mediterranean','Melon','Mexican','Microwave','Minestrone','Mix and Match','Morning','Evening','Noon','No-Yeast','One-Pan','Overnight','Oven-Roasted',
+              'Oven-French','Parmesan','Pasta','Peach','Peanut Butter','Quick','Quinoa','Radish and Cucumber','Red','Refried','Roasted','Boiled','Sauteed','Savory','Skillet','Southern','Northern','Eastern','Western',
+              'Spicy','Spanish','Stuffed','Sunshine','Runny','Spring','Winter','Summer','Super','Tropical','West African','White','Black']
+
+reci_lname = ['Pudding','Sauce','Bars','Oatmeal','French Toast','Noodles','Pilaf','Salad','Chicken','Mushroom Melt','Bisque','Cranberries','Apple Chips','Apples and Squash','Cauliflower','Tots',
+              'Tortilla Chips','Zucchini Sticks','Berry Smoothie','Pancakes','Soup','Corn Salad','Dip','Sausage','Apple Crisp','Chile Pan-Fry','Wedges','Scones','Pasta','Lasagna','Pie','Casserole',
+              'Bean Dip','Applesauce','Bean Soup','Tomatoes','Vegetables','Onions','Brussel Sprouts','Mustard Brussels Sprouts','Snap Peas','Dressing','Rice Bowl','Green Beans','Salad Mix','Corn Chowder','Granola',
+              'Mac and Cheese','Rice','Squash','Pie','Sheperds Pie','Muffins','Roll-Ups','Cucumbers','Tasty Hamburger','Tofu Scramble','Beets','Pea Soup','Bok Choy','Veggie Melt','Turkey','Pumpkin Chilli','Patties',
+              'Skillet Eggs','Berry Muesli','Yogurt Rolls','Fruit Crisp','Wontons','Quick Bread','Orzo','Taco Filling','Tartar Sauce','Turnips and Potatoes','Gazpacho Soup', 'Fig Bars','Cheesy Enchiladas','Trail Mix','Garbanzo Beans',
+              'Dumpling','Polenta Pie']
+
+
+
+def create_table():
+    c.execute('CREATE TABLE IF NOT EXISTS Recipe(Recipe_ID varchar(10), Recipe_Type varchar(10), Recipe_Name varchar(10), creation_date TEXT)')
+
+
+
+def data_entry():
+    g = time.time()
+    date = str(datetime.datetime.fromtimestamp(g).strftime('%Y-%m-%d %H:%M:%S'))
+    r_id = 'REC' + str(i)
+    r_type = 'Vegetarian'
+    r_name = random.choice(reci_fname)+' '+random.choice(reci_lname)
+    c.execute("INSERT INTO Recipe (Recipe_ID, Recipe_Type, Recipe_Name, creation_date) VALUES (?,?,?,?)",
+              (r_id, r_type, r_name, date))
+    conn.commit()
+
+    
+              
+create_table()
+
+for i in range(21861,100001):
+    data_entry()
+    #time.sleep(1)
+c.close()
+conn.close()
+
+            
+    
+    
+            
